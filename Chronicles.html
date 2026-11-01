@@ -1,19 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" type="text/css" href="default.css">
+		<meta name="description" content="Chronicles — reflections on where the game is today and where it is heading.">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-		<title>Chronicles</title>
-
+		<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="site.css">
+		<title>Chronicles · The Beautiful Game</title>
 	</head>
-    <body>
-    	<header>
-			<h1>Chronicles</h1>
+	<body>
+		<header class="masthead">
+			<p class="masthead-kicker">The Beautiful Game · Journal</p>
+			<h1 class="masthead-title"><a href="index.html">The Beautiful <span>Game</span></a></h1>
+			<p class="masthead-tagline">For the love of the game — and everything around it.</p>
 		</header>
 
+		<nav class="site-nav" aria-label="Main">
+			<button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-list">
+				<span></span><span></span><span></span>
+			</button>
+			<ul class="nav-list" id="nav-list">
+				<li><a href="Chronicles.html" aria-current="page">Chronicles</a></li>
+				<li><a href="football-flashbacks.html">Flashbacks</a></li>
+				<li><a href="legendary-performances.html">Legendary Players</a></li>
+				<li><a href="gaming-corner.html">Gaming Corner</a></li>
+				<li><a href="about-me.html">About</a></li>
+			</ul>
+		</nav>
+
+		<main class="page">
+			<section class="intro">
+				<div class="intro-heading">
+					<p class="eyebrow">Notes on the modern game</p>
+					<h2 class="intro-title"><span class="line">Football</span> <span class="line accent">chronicles.</span></h2>
+				</div>
+				<p class="intro-text">Reflections on where the game is today, what it has gained, and what it might be losing along the way.</p>
+			</section>
+
+			<section class="journal" aria-labelledby="journal-label">
+				<div class="journal-bar">
+					<h2 class="eyebrow eyebrow--strong" id="journal-label">The chronicles</h2>
+					<p class="journal-note">One story published.</p>
+				</div>
+
+				<div class="card-grid">
+					<article class="card card--featured">
+						<a class="card-link" href="is-soccer-becoming-more-soulless.html">
+							<figure class="card-media">
+								<img src="pictures/riquelme.jpg" alt="Juan Román Riquelme celebrating with Boca Juniors">
+							</figure>
+							<div class="card-body">
+								<p class="card-meta"><span>Chronicles</span><span>Published</span></p>
+								<h3 class="card-title">Is soccer becoming more boring?</h3>
+								<p class="card-desc">A reflection on risk, memory and the beauty in the quiet moments.</p>
+							</div>
+						</a>
+					</article>
+
+					<article class="card card--wide card--soon">
+						<figure class="card-media">
+							<img src="pictures/Lamine-Yamal-2.jpg" alt="Lamine Yamal in a Barcelona shirt">
+						</figure>
+						<div class="card-body">
+							<p class="card-meta"><span>Chronicles</span></p>
+							<h3 class="card-title">Are wonderkids overhyped nowadays?</h3>
+							<p class="card-desc">Coming soon · This story is not published yet.</p>
+						</div>
+					</article>
+				</div>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<div class="footer-inner">
+				<div>
+					<h2 class="footer-title">Keep the conversation going</h2>
+					<p>Have an article idea? Write to <a href="mailto:ayoub.melliani@hotmail.com">ayoub.melliani@hotmail.com</a></p>
+				</div>
+				<p class="footer-copy">2024 © Ayoub M. · The Beautiful Game</p>
+			</div>
+		</footer>
+
+		<script src="nav.js"></script>
 	</body>
 </html>

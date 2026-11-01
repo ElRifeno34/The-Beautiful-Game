@@ -1,65 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>About me</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="About Ayoub, the football fan behind The Beautiful Game, and why this journal exists.">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-		<link rel="stylesheet" type="text/css" href="default.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
+		<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="site.css">
+		<title>About · The Beautiful Game</title>
 	</head>
-    <body>
-    	<header>
-			<h1>About me</h1>
-			<a href="index.html" class="home-button">
-            	<i class="fas fa-home"></i> HOME
-        	</a>
+	<body>
+		<header class="masthead">
+			<p class="masthead-kicker">The person behind the pages</p>
+			<h1 class="masthead-title"><a href="index.html">About <span>me</span></a></h1>
+			<p class="masthead-tagline">A little about the football fan, and why this journal exists.</p>
 		</header>
-        <main>
 
-    <section class="about-me">
- 
+		<nav class="site-nav" aria-label="Main">
+			<button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-list">
+				<span></span><span></span><span></span>
+			</button>
+			<ul class="nav-list" id="nav-list">
+				<li><a href="Chronicles.html">Chronicles</a></li>
+				<li><a href="football-flashbacks.html">Flashbacks</a></li>
+				<li><a href="legendary-performances.html">Legendary Players</a></li>
+				<li><a href="gaming-corner.html">Gaming Corner</a></li>
+				<li><a href="about-me.html" aria-current="page">About</a></li>
+			</ul>
+		</nav>
 
-        <div class="about-section">
-            <h2>WHO AM I?</h2>
-            <p>
-                Hey, I'm Ayoub. I was born in Al Hoceima, Morocco, grew up in Rabat, and now I live in Montreal.
-                Telling my own story has never been easy, but if there's one thing that's been a constant in my life,
-                it's soccer.
-            </p>
-            <p>
-                It all started when I was a kid—playing in the streets, watching games with family, arguing about teams
-                with friends, and even spending hours on soccer video games. What began as fun slowly became a real passion,
-                one that's been with me through every stage of my life.
-            </p>
-            <p>
-                Today, I carry that love proudly. I support my hometown club, CRA (Chabab Rif Al Hoceima), while also
-                following the ups and downs of OM and Arsenal. For me, soccer isn't just a sport—it's a way of connecting,
-                learning, and feeling part of something bigger.
-            </p>
-        </div>
+		<main class="page page--narrow">
+			<p class="eyebrow eyebrow--accent">A life with the game</p>
+			<h2 class="page-title">The story behind the journal.</h2>
 
-        <div class="about-section">
-            <h2>WHY THIS BLOG?</h2>
-            <p>
-                This blog is my way of sharing that passion with you. Whether it's breaking down the latest match,
-                discussing transfer rumors, or reminiscing about classic moments, I want to create a space where football
-                fans can connect, learn, and enjoy the beautiful game together.
-            </p>
-        </div>
-    </section>
-</main>
+			<div class="about-body prose">
+				<section class="about-section">
+					<h2>Who am I?</h2>
+					<p>Hey, I'm Ayoub. I was born in Al Hoceima, Morocco, grew up in Rabat, and now I live in Montreal. Telling my own story has never been easy, but if there's one thing that's been a constant in my life, it's soccer.</p>
+					<p>It all started when I was a kid—playing in the streets, watching games with family, arguing about teams with friends, and even spending hours on soccer video games. What began as fun slowly became a real passion, one that's been with me through every stage of my life.</p>
+					<p>Today, I carry that love proudly. I support my hometown club, CRA (Chabab Rif Al Hoceima), while also following the ups and downs of OM and Arsenal. For me, soccer isn't just a sport—it's a way of connecting, learning, and feeling part of something bigger.</p>
+				</section>
 
-    </main>
+				<section class="about-section">
+					<h2>Why this blog?</h2>
+					<p>This blog is my way of sharing that passion with you. Whether it's breaking down the latest match, discussing transfer rumors, or reminiscing about classic moments, I want to create a space where football fans can connect, learn, and enjoy the beautiful game together.</p>
+				</section>
 
-    <footer>
-        <!-- Your footer content here -->
-    </footer>
+				<a class="back-link" href="index.html">← Back to the journal</a>
+			</div>
+		</main>
 
+		<footer class="site-footer">
+			<div class="footer-inner">
+				<div>
+					<h2 class="footer-title">Keep the conversation going</h2>
+					<p>Have an article idea? Write to <a href="mailto:ayoub.melliani@hotmail.com">ayoub.melliani@hotmail.com</a></p>
+				</div>
+				<p class="footer-copy">2024 © Ayoub M. · The Beautiful Game</p>
+			</div>
+		</footer>
+
+		<script src="nav.js"></script>
 	</body>
 </html>

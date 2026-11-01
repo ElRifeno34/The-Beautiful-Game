@@ -1,13 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>Legendary players</title>
-		<link rel="stylesheet" type="text/css" href="default.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+		<meta name="description" content="Legendary Players — the players whose character, craft and presence made the game feel larger than life.">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="site.css">
+		<title>Legendary Players · The Beautiful Game</title>
 	</head>
-    <body>
+	<body>
+		<header class="masthead">
+			<p class="masthead-kicker">The Beautiful Game · Journal</p>
+			<h1 class="masthead-title"><a href="index.html">The Beautiful <span>Game</span></a></h1>
+			<p class="masthead-tagline">For the love of the game — and everything around it.</p>
+		</header>
 
+		<nav class="site-nav" aria-label="Main">
+			<button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-list">
+				<span></span><span></span><span></span>
+			</button>
+			<ul class="nav-list" id="nav-list">
+				<li><a href="Chronicles.html">Chronicles</a></li>
+				<li><a href="football-flashbacks.html">Flashbacks</a></li>
+				<li><a href="legendary-performances.html" aria-current="page">Legendary Players</a></li>
+				<li><a href="gaming-corner.html">Gaming Corner</a></li>
+				<li><a href="about-me.html">About</a></li>
+			</ul>
+		</nav>
+
+		<main class="page">
+			<section class="intro">
+				<div class="intro-heading">
+					<p class="eyebrow">The people who stay with us</p>
+					<h2 class="intro-title"><span class="line">Legendary</span> <span class="line accent">players.</span></h2>
+				</div>
+				<p class="intro-text">A place for the players whose character, craft and presence made the game feel larger than life.</p>
+			</section>
+
+			<section class="journal" aria-labelledby="journal-label">
+				<div class="journal-bar">
+					<h2 class="eyebrow eyebrow--strong" id="journal-label">Player stories</h2>
+					<p class="journal-note">No published stories yet.</p>
+				</div>
+
+				<div class="empty-state">
+					<h3>The next chapter is still being written.</h3>
+					<p>There are no published player profiles in this section yet. In the meantime, visit <a href="Chronicles.html">Chronicles</a> for the journal's published story.</p>
+				</div>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<div class="footer-inner">
+				<div>
+					<h2 class="footer-title">Keep the conversation going</h2>
+					<p>Have an article idea? Write to <a href="mailto:ayoub.melliani@hotmail.com">ayoub.melliani@hotmail.com</a></p>
+				</div>
+				<p class="footer-copy">2024 © Ayoub M. · The Beautiful Game</p>
+			</div>
+		</footer>
+
+		<script src="nav.js"></script>
 	</body>
 </html>
