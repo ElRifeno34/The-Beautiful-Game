@@ -1,0 +1,401 @@
+/* =========================================================
+   The Beautiful Game — home page
+   ========================================================= */
+
+:root {
+    --green-900: #123a2b;
+    --green-800: #174a36;
+    --green-700: #1d5a42;
+    --lime: #d5ef5b;
+    --cream: #f4f1ea;
+    --paper: #fcfbf7;
+    --ink: #17271f;
+    --muted: #6b7470;
+    --line: #dcd8cd;
+
+    --font-display: 'Oswald', 'Arial Narrow', sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+    --container: 940px;
+    --gutter: 20px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+    position: relative;
+    overflow: hidden;
+    background: var(--green-800);
+    color: var(--cream);
+    text-align: center;
+    padding: 22px var(--gutter) 18px;
+}
+
+/* decorative pitch-line arcs in the corners */
+.masthead::before,
+.masthead::after {
+    content: "";
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border: 1px solid rgba(244, 241, 234, 0.18);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.masthead::before { top: -95px; left: -95px; }
+.masthead::after  { bottom: -125px; right: -95px; width: 220px; height: 220px; }
+
+.masthead-kicker {
+    color: var(--lime);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.masthead-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(44px, 7vw, 82px);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 8px 0 10px;
+}
+.masthead-title a { text-decoration: none; }
+.masthead-title span { color: var(--lime); }
+
+.masthead-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    color: rgba(244, 241, 234, 0.8);
+}
+
+/* ---------- Navigation ---------- */
+
+.site-nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--line);
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 34px;
+}
+
+.nav-list a {
+    display: block;
+    padding: 17px 0;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s;
+}
+.nav-list a:hover,
+.nav-list a:focus-visible {
+    color: var(--green-800);
+    border-bottom-color: var(--lime);
+}
+
+.nav-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--ink);
+}
+
+/* ---------- Layout ---------- */
+
+.page {
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    margin: 0 auto;
+    padding: 80px var(--gutter) 64px;
+}
+
+.eyebrow {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+.eyebrow--strong {
+    font-size: 10px;
+    font-weight: 700;
+    max-width: 80px;
+    line-height: 1.3;
+}
+
+/* ---------- Intro ---------- */
+
+.intro {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    align-items: end;
+    gap: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ink);
+}
+
+.intro-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(40px, 11vw, 76px);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-top: 14px;
+    color: var(--ink);
+}
+.intro-title .line { display: block; white-space: nowrap; }
+.intro-title .accent { color: var(--green-800); }
+
+.intro-text {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    line-height: 1.6;
+    color: #3a4640;
+    max-width: 330px;
+    padding-bottom: 4px;
+}
+
+/* ---------- Journal ---------- */
+
+.journal-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0 4px;
+}
+
+.journal-note {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+}
+
+.card {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+.card--featured { grid-column: span 7; }
+.card--wide     { grid-column: span 5; }
+
+.card-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    text-decoration: none;
+}
+
+.card-media {
+    overflow: hidden;
+    aspect-ratio: 300 / 185;
+    background: var(--green-900);
+}
+.card--featured .card-media { aspect-ratio: 540 / 292; }
+.card--wide .card-media     { aspect-ratio: 380 / 234; }
+
+.card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 14px 16px 18px;
+}
+
+.card-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-800);
+}
+
+.card-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 24px 0 24px;
+}
+
+.card--featured .card-title {
+    font-size: 40px;
+    font-weight: 600;
+    margin: 42px 0 32px;
+    max-width: 420px;
+}
+
+.card-desc {
+    margin-top: auto;
+    font-size: 9px;
+    color: var(--muted);
+}
+
+/* Unpublished stories are slightly muted */
+.card--soon .card-title { color: #34433b; }
+
+/* Hover — only for the published (linked) story */
+.card--featured:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -18px rgba(18, 58, 43, 0.45);
+}
+.card--featured:hover .card-media img { transform: scale(1.03); }
+.card--featured:hover .card-title { color: var(--green-800); }
+
+.card-link:focus-visible {
+    outline: 2px solid var(--green-800);
+    outline-offset: 3px;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+    background: var(--green-900);
+    color: rgba(244, 241, 234, 0.85);
+    padding: 34px var(--gutter);
+}
+
+.footer-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 6px;
+}
+
+.site-footer p { font-size: 11px; }
+.site-footer a {
+    color: var(--cream);
+    text-underline-offset: 2px;
+}
+.site-footer a:hover { color: var(--lime); }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+    .card,
+    .card--featured,
+    .card--wide { grid-column: span 6; }
+    .card--featured { grid-column: span 12; }
+}
+
+@media (max-width: 720px) {
+    .page { padding-top: 48px; }
+
+    .intro {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .nav-toggle { display: flex; }
+    .nav-list {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 10px;
+    }
+    .nav-list.is-open { display: flex; }
+    .nav-list a { padding: 10px 0; }
+
+    .card-title { font-size: 24px; }
+    .card--featured .card-title { font-size: 32px; margin: 28px 0 24px; }
+}
+
+@media (max-width: 560px) {
+    .card,
+    .card--featured,
+    .card--wide { grid-column: span 12; }
+
+    .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}
