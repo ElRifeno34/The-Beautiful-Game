@@ -509,7 +509,10 @@ a {
     margin-bottom: 6px;
 }
 
+.editor--narrow { max-width: 420px; }
+
 .editor input[type="text"],
+.editor input[type="email"],
 .editor input[type="password"],
 .editor select,
 .editor textarea {
@@ -597,6 +600,69 @@ a {
 .editor-status--error { color: var(--red); }
 .editor-status--ok { color: var(--green-800); font-weight: 500; }
 .editor-status a { color: inherit; }
+
+.desk-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.desk-user { font-size: 12px; color: var(--muted); }
+
+.link-button {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green-800);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.link-button:hover { color: var(--red); }
+.link-button--danger { color: var(--red); }
+.link-button:disabled { opacity: .5; cursor: progress; }
+
+.my-stories { margin-top: 56px; }
+.my-stories-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+}
+.my-stories-list { list-style: none; }
+.my-story {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+}
+.my-story a {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 19px;
+    color: var(--ink);
+    text-decoration: none;
+}
+.my-story a:hover { color: var(--green-800); }
+.my-story--hidden a { color: var(--muted); }
+.my-story-meta { display: block; font-size: 11px; color: var(--muted); }
+.my-story-actions { display: flex; gap: 14px; flex-shrink: 0; }
+.my-stories-list > .editor-help { padding: 14px 0; }
+
+.story-loading {
+    text-align: center;
+    color: var(--muted);
+    padding: 120px var(--gutter);
+}
 
 .editor-preview {
     border-top: 1px solid var(--line);

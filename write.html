@@ -31,77 +31,103 @@
 		</nav>
 
 		<main class="page page--narrow">
-			<p class="eyebrow eyebrow--accent">New journal entry</p>
-			<h2 class="page-title">Write a story.</h2>
-
-			<form class="editor" id="editor" novalidate>
-				<fieldset class="editor-group">
-					<legend>GitHub access</legend>
-					<p class="editor-help">Publishing saves the article to the site's GitHub repository. Paste a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> that only has access to <strong>The-Beautiful-Game</strong>, with <em>Contents: Read and write</em> permission. It is only sent to GitHub.</p>
-					<label class="editor-field">
-						<span>Token</span>
-						<input type="password" id="token" autocomplete="off" spellcheck="false" required>
-					</label>
-					<label class="editor-check">
-						<input type="checkbox" id="remember-token">
-						<span>Remember the token on this device</span>
-					</label>
-				</fieldset>
-
-				<fieldset class="editor-group">
-					<legend>The story</legend>
-					<label class="editor-field">
-						<span>Title</span>
-						<input type="text" id="title" required placeholder="The night football stood still">
-					</label>
-					<label class="editor-field">
-						<span>Section</span>
-						<select id="section" required>
-							<option value="Chronicles.html">Chronicles</option>
-							<option value="football-flashbacks.html">Football Flashbacks</option>
-							<option value="legendary-performances.html">Legendary Players</option>
-							<option value="gaming-corner.html">Gaming Corner</option>
-						</select>
-					</label>
-					<label class="editor-field">
-						<span>Summary</span>
-						<input type="text" id="teaser" required maxlength="140" placeholder="One line shown on the story's card.">
-					</label>
-				</fieldset>
-
-				<fieldset class="editor-group">
-					<legend>Cover photo</legend>
-					<label class="editor-field">
-						<span>Photo</span>
-						<input type="file" id="cover" accept="image/*" required>
-					</label>
-					<label class="editor-field">
-						<span>Description</span>
-						<input type="text" id="cover-alt" required placeholder="What the photo shows, for screen readers.">
-					</label>
-				</fieldset>
-
-				<fieldset class="editor-group">
-					<legend>Text</legend>
-					<p class="editor-help">Leave an empty line between paragraphs. Start a paragraph with <code>&gt;</code> to make it a quote. Use <strong>Add photo</strong> to place another picture where the cursor is.</p>
-					<textarea id="body" rows="18" required></textarea>
-					<div class="editor-row">
-						<label class="editor-button editor-button--ghost">
-							Add photo
-							<input type="file" id="extra-photo" accept="image/*" class="visually-hidden">
-						</label>
-						<span class="editor-help" id="photo-list"></span>
-					</div>
-				</fieldset>
-
-				<div class="editor-actions">
-					<button type="submit" class="editor-button" id="publish">Publish story</button>
-					<p class="editor-status" id="status" role="status" aria-live="polite"></p>
+			<!-- Shown until Supabase is connected in supabase-config.js -->
+			<section id="not-configured" hidden>
+				<p class="eyebrow eyebrow--accent">Almost there</p>
+				<h2 class="page-title">Connect the writer's desk.</h2>
+				<div class="empty-state">
+					<h3>Publishing isn't set up yet.</h3>
+					<p>Add your Supabase project details to <code>supabase-config.js</code>. The README walks through the setup.</p>
 				</div>
-			</form>
+			</section>
+
+			<section id="sign-in" hidden>
+				<p class="eyebrow eyebrow--accent">Members only</p>
+				<h2 class="page-title">Sign in to write.</h2>
+				<form class="editor editor--narrow" id="sign-in-form">
+					<label class="editor-field">
+						<span>Email</span>
+						<input type="email" id="email" autocomplete="username" required>
+					</label>
+					<label class="editor-field">
+						<span>Password</span>
+						<input type="password" id="password" autocomplete="current-password" required>
+					</label>
+					<div class="editor-actions">
+						<button type="submit" class="editor-button" id="sign-in-button">Sign in</button>
+						<p class="editor-status" id="sign-in-status" role="status" aria-live="polite"></p>
+					</div>
+				</form>
+			</section>
+
+			<section id="desk" hidden>
+				<div class="desk-bar">
+					<p class="eyebrow eyebrow--accent">New journal entry</p>
+					<p class="desk-user"><span id="user-email"></span> · <button type="button" class="link-button" id="sign-out">Sign out</button></p>
+				</div>
+				<h2 class="page-title">Write a story.</h2>
+
+				<form class="editor" id="editor" novalidate>
+					<fieldset class="editor-group">
+						<legend>The story</legend>
+						<label class="editor-field">
+							<span>Title</span>
+							<input type="text" id="title" required placeholder="The night football stood still">
+						</label>
+						<label class="editor-field">
+							<span>Section</span>
+							<select id="section" required>
+								<option value="Chronicles.html">Chronicles</option>
+								<option value="football-flashbacks.html">Football Flashbacks</option>
+								<option value="legendary-performances.html">Legendary Players</option>
+								<option value="gaming-corner.html">Gaming Corner</option>
+							</select>
+						</label>
+						<label class="editor-field">
+							<span>Summary</span>
+							<input type="text" id="teaser" required maxlength="140" placeholder="One line shown on the story's card.">
+						</label>
+					</fieldset>
+
+					<fieldset class="editor-group">
+						<legend>Cover photo</legend>
+						<label class="editor-field">
+							<span>Photo</span>
+							<input type="file" id="cover" accept="image/*" required>
+						</label>
+						<label class="editor-field">
+							<span>Description</span>
+							<input type="text" id="cover-alt" required placeholder="What the photo shows, for screen readers.">
+						</label>
+					</fieldset>
+
+					<fieldset class="editor-group">
+						<legend>Text</legend>
+						<p class="editor-help">Leave an empty line between paragraphs. Start a paragraph with <code>&gt;</code> to make it a quote. Use <strong>Add photo</strong> to place another picture where the cursor is.</p>
+						<textarea id="body" rows="18" required></textarea>
+						<div class="editor-row">
+							<label class="editor-button editor-button--ghost">
+								Add photo
+								<input type="file" id="extra-photo" accept="image/*" class="visually-hidden">
+							</label>
+							<span class="editor-help" id="photo-list"></span>
+						</div>
+					</fieldset>
+
+					<div class="editor-actions">
+						<button type="submit" class="editor-button" id="publish">Publish story</button>
+						<p class="editor-status" id="status" role="status" aria-live="polite"></p>
+					</div>
+				</form>
+
+				<section class="my-stories" aria-labelledby="my-stories-title">
+					<h3 class="my-stories-title" id="my-stories-title">Your stories</h3>
+					<ul class="my-stories-list" id="my-stories"></ul>
+				</section>
+			</section>
 		</main>
 
-		<section class="editor-preview" aria-label="Preview">
+		<section class="editor-preview" id="preview-wrap" aria-label="Preview" hidden>
 			<p class="editor-preview-label">Preview</p>
 			<div id="preview"></div>
 		</section>
@@ -117,6 +143,9 @@
 		</footer>
 
 		<script src="nav.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+		<script src="supabase-config.js"></script>
+		<script src="stories.js"></script>
 		<script src="write.js"></script>
 	</body>
 </html>
