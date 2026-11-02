@@ -1,7 +1,8 @@
 /* =========================================================
    The Beautiful Game — writer's desk
-   Sign in with Supabase, write a story, upload its photos and
-   publish it. Uses the shared helpers from stories.js.
+   Sign in with Supabase, write or edit a story, format it,
+   upload its photos and publish it. Uses the shared helpers
+   from stories.js.
    ========================================================= */
 
 (function () {
@@ -41,8 +42,11 @@
 			}
 			$('user-email').textContent = session.user.email;
 			show('desk');
+			TBG.checkAuthor();
 			loadMyStories();
 			renderPreview();
+			var slug = new URLSearchParams(location.search).get('edit');
+			if (slug) startEditing({ slug: slug });
 		});
 	}
 
@@ -63,7 +67,12 @@
 	});
 
 	$('sign-out').addEventListener('click', function () {
-		sb.auth.signOut().then(function () { show('sign-in'); });
+		sb.auth.signOut().then(function () {
+			var write = document.querySelector('.nav-write');
+			if (write) write.remove();
+			stopEditing();
+			show('sign-in');
+		});
 	});
 
 	/* ---------- Your stories ---------- */
@@ -85,6 +94,7 @@
 					'<div><a href="' + TBG.storyUrl(s) + '">' + TBG.esc(TBG.typeset(s.title)) + '</a>' +
 					'<span class="my-story-meta">' + TBG.SECTIONS[s.section].name + ' · ' + date + (s.published ? '' : ' · Hidden') + '</span></div>' +
 					'<div class="my-story-actions">' +
+					'<button type="button" class="link-button" data-action="edit">Edit</button>' +
 					'<button type="button" class="link-button" data-action="toggle" data-published="' + s.published + '">' + (s.published ? 'Hide' : 'Show') + '</button>' +
 					'<button type="button" class="link-button link-button--danger" data-action="delete">Delete</button>' +
 					'</div></li>';
@@ -97,8 +107,11 @@
 		if (!btn) return;
 		var id = btn.closest('li').getAttribute('data-id');
 		var title = btn.closest('li').querySelector('a').textContent;
+		var action = btn.getAttribute('data-action');
+		if (action === 'edit') return startEditing({ id: id });
+
 		var request;
-		if (btn.getAttribute('data-action') === 'toggle') {
+		if (action === 'toggle') {
 			request = sb.from('articles').update({ published: btn.getAttribute('data-published') !== 'true' }).eq('id', id);
 		} else {
 			if (!window.confirm('Delete “' + title + '” for good? This cannot be undone.')) return;
@@ -110,6 +123,7 @@
 				btn.disabled = false;
 				return window.alert('That did not work: ' + res.error.message);
 			}
+			if (editing && editing.id === id && action === 'delete') stopEditing();
 			loadMyStories();
 		});
 	});
@@ -120,6 +134,7 @@
 	var extraPhotos = [];
 	var previewUrls = {};
 	var statusEl = $('status');
+	var editing = null; // the story being edited, or null for a new one
 
 	function objectUrl(key, file) {
 		if (previewUrls[key]) URL.revokeObjectURL(previewUrls[key]);
@@ -132,7 +147,7 @@
 		$('preview').innerHTML = TBG.articleMain({
 			title: fields.title.value.trim() || 'Your title',
 			section: fields.section.value,
-			cover_url: previewUrls.cover || '',
+			cover_url: previewUrls.cover || (editing && editing.cover_url) || '',
 			cover_alt: fields.coverAlt.value,
 			body: fields.body.value
 		}, photos);
@@ -146,19 +161,106 @@
 		renderPreview();
 	});
 
+	function insertAtCursor(text) {
+		var ta = fields.body;
+		var at = ta.selectionStart || ta.value.length;
+		ta.value = ta.value.slice(0, at) + text + ta.value.slice(at);
+		ta.selectionStart = ta.selectionEnd = at + text.length;
+	}
+
 	$('extra-photo').addEventListener('change', function (e) {
 		var file = e.target.files[0];
 		if (!file) return;
 		var name = 'photo ' + (extraPhotos.length + 1);
 		extraPhotos.push({ name: name, file: file });
 		objectUrl('extra:' + name, file);
-		var ta = fields.body;
-		var at = ta.selectionStart || ta.value.length;
-		ta.value = ta.value.slice(0, at) + '\n\n[photo: ' + name + ' | describe the photo]\n\n' + ta.value.slice(at);
+		insertAtCursor('\n\n[photo: ' + name + ' | describe the photo]\n\n');
 		$('photo-list').textContent = extraPhotos.length + (extraPhotos.length === 1 ? ' extra photo added.' : ' extra photos added.');
 		e.target.value = '';
 		renderPreview();
 	});
+
+	/* ---------- Formatting toolbar ---------- */
+
+	function wrapSelection(before, after, placeholder) {
+		var ta = fields.body;
+		var start = ta.selectionStart, end = ta.selectionEnd;
+		var chosen = ta.value.slice(start, end) || placeholder;
+		ta.value = ta.value.slice(0, start) + before + chosen + after + ta.value.slice(end);
+		ta.focus();
+		ta.selectionStart = start + before.length;
+		ta.selectionEnd = start + before.length + chosen.length;
+	}
+
+	// Puts a mark at the start of the paragraph the cursor is in
+	function markParagraph(mark) {
+		var ta = fields.body;
+		var start = ta.value.lastIndexOf('\n\n', ta.selectionStart - 1);
+		start = start === -1 ? 0 : start + 2;
+		var rest = ta.value.slice(start).replace(/^(## |> )/, '');
+		ta.value = ta.value.slice(0, start) + mark + rest;
+		ta.focus();
+		ta.selectionStart = ta.selectionEnd = start + mark.length;
+	}
+
+	document.querySelector('.editor-toolbar').addEventListener('click', function (e) {
+		var btn = e.target.closest('button[data-format]');
+		if (!btn) return;
+		var format = btn.getAttribute('data-format');
+		if (format === 'bold') wrapSelection('**', '**', 'bold words');
+		if (format === 'italic') wrapSelection('*', '*', 'italic words');
+		if (format === 'heading') markParagraph('## ');
+		if (format === 'quote') markParagraph('> ');
+		if (format === 'link') {
+			var url = window.prompt('Link address (starting with https://)', 'https://');
+			if (!url || !/^https?:\/\/\S+$/.test(url)) return;
+			wrapSelection('[', '](' + url + ')', 'link text');
+		}
+		renderPreview();
+	});
+
+	/* ---------- Editing an existing story ---------- */
+
+	function startEditing(match) {
+		var query = sb.from('articles').select('*');
+		query = match.id ? query.eq('id', match.id) : query.eq('slug', match.slug);
+		query.maybeSingle().then(function (res) {
+			if (res.error || !res.data) return setStatus(statusEl, 'That story could not be found.', 'error');
+			resetForm();
+			editing = res.data;
+			fields.title.value = editing.title;
+			fields.section.value = editing.section;
+			fields.teaser.value = editing.teaser;
+			fields.coverAlt.value = editing.cover_alt;
+			fields.body.value = editing.body;
+			$('cover-current').hidden = false;
+			$('desk-eyebrow').textContent = 'Editing a published story';
+			$('desk-title').textContent = 'Edit the story.';
+			$('publish').textContent = 'Save changes';
+			$('cancel-edit').hidden = false;
+			setStatus(statusEl, '');
+			renderPreview();
+			$('editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+		});
+	}
+
+	function stopEditing() {
+		editing = null;
+		$('cover-current').hidden = true;
+		$('desk-eyebrow').textContent = 'New journal entry';
+		$('desk-title').textContent = 'Write a story.';
+		$('publish').textContent = 'Publish story';
+		$('cancel-edit').hidden = true;
+		if (/[?&]edit=/.test(location.search)) history.replaceState(null, '', location.pathname);
+		resetForm();
+	}
+
+	$('cancel-edit').addEventListener('click', function () {
+		stopEditing();
+		setStatus(statusEl, '');
+	});
+
+	/* ---------- Saving ---------- */
 
 	// Shrinks large phone photos before uploading
 	function preparePhoto(file) {
@@ -205,7 +307,8 @@
 	$('editor').addEventListener('submit', function (e) {
 		e.preventDefault();
 		var missing = Object.keys(fields).filter(function (k) {
-			return k === 'cover' ? !fields.cover.files.length : !fields[k].value.trim();
+			if (k === 'cover') return !editing && !fields.cover.files.length;
+			return !fields[k].value.trim();
 		});
 		if (missing.length) {
 			setStatus(statusEl, 'Fill in every field before publishing.', 'error');
@@ -213,6 +316,7 @@
 			return;
 		}
 
+		var wasEditing = editing;
 		var story = {
 			title: fields.title.value.trim(),
 			section: fields.section.value,
@@ -220,14 +324,17 @@
 			cover_alt: fields.coverAlt.value.trim(),
 			body: fields.body.value.trim()
 		};
-		var folder;
+		var newCover = fields.cover.files[0];
 		$('publish').disabled = true;
 		setStatus(statusEl, 'Uploading photos…');
 
-		freeSlug(story.title).then(function (slug) {
+		// An edited story keeps its web address so existing links still work
+		var slugReady = wasEditing ? Promise.resolve(wasEditing.slug) : freeSlug(story.title);
+		slugReady.then(function (slug) {
 			story.slug = slug;
-			folder = slug + '-' + Date.now();
-			return Promise.all([uploadPhoto(folder + '/cover.jpg', fields.cover.files[0])].concat(extraPhotos.map(function (p, i) {
+			var folder = slug + '-' + Date.now();
+			var uploads = [newCover ? uploadPhoto(folder + '/cover.jpg', newCover) : Promise.resolve(wasEditing.cover_url)];
+			return Promise.all(uploads.concat(extraPhotos.map(function (p, i) {
 				return uploadPhoto(folder + '/photo-' + (i + 1) + '.jpg', p.file).then(function (url) { p.url = url; });
 			})));
 		}).then(function (urls) {
@@ -237,17 +344,19 @@
 				story.body = story.body.split('[photo: ' + p.name + ' ').join('[photo: ' + p.url + ' ')
 					.split('[photo: ' + p.name + ']').join('[photo: ' + p.url + ']');
 			});
-			setStatus(statusEl, 'Publishing…');
-			return sb.from('articles').insert(story);
+			setStatus(statusEl, wasEditing ? 'Saving…' : 'Publishing…');
+			return wasEditing
+				? sb.from('articles').update(story).eq('id', wasEditing.id)
+				: sb.from('articles').insert(story);
 		}).then(function (res) {
 			if (res.error) throw new Error(res.error.message);
 			var url = TBG.storyUrl(story);
-			resetForm();
+			if (wasEditing) stopEditing(); else resetForm();
 			statusEl.className = 'editor-status editor-status--ok';
-			statusEl.innerHTML = 'Published. <a href="' + url + '">Read “' + TBG.esc(TBG.typeset(story.title)) + '”</a>';
+			statusEl.innerHTML = (wasEditing ? 'Saved. ' : 'Published. ') + '<a href="' + url + '">Read “' + TBG.esc(TBG.typeset(story.title)) + '”</a>';
 			loadMyStories();
 		}).catch(function (err) {
-			setStatus(statusEl, 'Not published: ' + err.message, 'error');
+			setStatus(statusEl, (wasEditing ? 'Not saved: ' : 'Not published: ') + err.message, 'error');
 		}).then(function () {
 			$('publish').disabled = false;
 		});

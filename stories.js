@@ -43,8 +43,28 @@
 			.slice(0, 70).replace(/-+$/, '') || 'story';
 	}
 
-	// Splits the story text into blocks. A photo block is written as
-	// [photo: <address or name> | <description>]; names are looked up in photos.
+	// Inline formatting: **bold**, *italic* and [link text](https://address)
+	function emphasis(text) {
+		return esc(typeset(text))
+			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			.replace(/\*(.+?)\*/g, '<em>$1</em>');
+	}
+
+	function inline(text) {
+		text = String(text || '').replace(/\s+/g, ' ').trim();
+		var link = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+		var out = '', last = 0, m;
+		while ((m = link.exec(text))) {
+			out += emphasis(text.slice(last, m.index)) +
+				'<a href="' + esc(m[2]) + '" target="_blank" rel="noopener">' + emphasis(m[1]) + '</a>';
+			last = link.lastIndex;
+		}
+		return out + emphasis(text.slice(last));
+	}
+
+	// Splits the story text into blocks: paragraphs, "## " subheadings, "> " quotes,
+	// and photos written as [photo: <address or name> | <description>]
+	// (names are looked up in photos).
 	function bodyBlocks(text, photos) {
 		photos = photos || {};
 		return String(text || '').replace(/\r\n/g, '\n').split(/\n\s*\n/).map(function (block) {
@@ -54,6 +74,9 @@
 			if (photo) {
 				var src = photos[photo[1]] || (/^https:\/\//.test(photo[1]) ? photo[1] : '');
 				return src ? { type: 'img', src: src, alt: photo[2] || '' } : null;
+			}
+			if (/^##\s+/.test(block)) {
+				return { type: 'h', text: block.replace(/^##\s+/, '').split('\n').join(' ') };
 			}
 			if (block.charAt(0) === '>') {
 				return { type: 'quote', text: block.split('\n').map(function (l) { return l.replace(/^>\s?/, ''); }).join(' ') };
@@ -74,8 +97,9 @@
 			.concat(bodyBlocks(story.body, photos));
 		var body = blocks.map(function (b) {
 			if (b.type === 'img') return '<figure class="article-figure"><img src="' + esc(b.src) + '" alt="' + esc(typeset(b.alt)) + '"></figure>';
-			if (b.type === 'quote') return '<blockquote>' + esc(typeset(b.text.replace(/\s+/g, ' '))) + '</blockquote>';
-			return '<p>' + esc(typeset(b.text.replace(/\s+/g, ' '))) + '</p>';
+			if (b.type === 'h') return '<h3>' + inline(b.text) + '</h3>';
+			if (b.type === 'quote') return '<blockquote>' + inline(b.text) + '</blockquote>';
+			return '<p>' + inline(b.text) + '</p>';
 		}).join('\n');
 		return '<header class="article-hero">' +
 			'<p class="eyebrow">A journal entry · ' + section.name + '</p>' +
@@ -163,7 +187,44 @@
 			if (desc) desc.setAttribute('content', typeset(story.title) + ' ' + typeset(story.teaser));
 			var link = document.querySelector('.nav-list a[href="' + story.section + '"]');
 			if (link) link.setAttribute('aria-current', 'page');
+			loadedStory = story;
+			addEditLink();
 			document.dispatchEvent(new CustomEvent('tbg:content', { detail: { root: main } }));
+		});
+	}
+
+	/* ---------- Extras for the signed-in author ---------- */
+
+	var isAuthor = false;
+	var loadedStory = null;
+
+	function addEditLink() {
+		var hero = document.querySelector('#story .article-hero');
+		if (!isAuthor || !loadedStory || !hero || hero.querySelector('.edit-link')) return;
+		var edit = document.createElement('a');
+		edit.className = 'edit-link';
+		edit.href = 'write.html?edit=' + encodeURIComponent(loadedStory.slug);
+		edit.textContent = 'Edit this story';
+		hero.appendChild(edit);
+	}
+
+	// Signed-in authors get a "Write" button in the menu on every page
+	function checkAuthor() {
+		client.auth.getSession().then(function (res) {
+			if (!res.data.session) return null;
+			return client.rpc('is_author');
+		}).then(function (res) {
+			if (!res || res.error || !res.data) return;
+			isAuthor = true;
+			var navList = document.querySelector('.nav-list');
+			if (navList && !navList.querySelector('.nav-write')) {
+				var li = document.createElement('li');
+				li.className = 'nav-write';
+				var onDesk = /write\.html$/.test(location.pathname);
+				li.innerHTML = '<a href="write.html"' + (onDesk ? ' aria-current="page"' : '') + '>Write</a>';
+				navList.appendChild(li);
+			}
+			addEditLink();
 		});
 	}
 
@@ -178,9 +239,11 @@
 		articleMain: articleMain,
 		cardHtml: cardHtml,
 		placeCards: placeCards,
-		storyUrl: storyUrl
+		storyUrl: storyUrl,
+		checkAuthor: function () { if (client) checkAuthor(); }
 	};
 
 	if (document.getElementById('story')) loadStory();
 	else if (client && document.querySelector('.journal')) loadListing();
+	if (client) checkAuthor();
 })();
