@@ -111,7 +111,9 @@
 		}
 		var holder = document.createElement('div');
 		holder.innerHTML = stories.map(cardHtml).join('');
-		grid.prepend.apply(grid, Array.prototype.slice.call(holder.children));
+		var added = Array.prototype.slice.call(holder.children);
+		grid.prepend.apply(grid, added);
+		document.dispatchEvent(new CustomEvent('tbg:content', { detail: { cards: added } }));
 
 		var cards = grid.querySelectorAll(':scope > .card');
 		Array.prototype.forEach.call(cards, function (card, n) {
@@ -149,6 +151,7 @@
 		var notFound = function () {
 			main.innerHTML = '<div class="page"><div class="empty-state"><h3>This story could not be found.</h3>' +
 				'<p>It may have been moved or hidden. Head back to <a href="index.html">the journal</a> for the latest stories.</p></div></div>';
+			document.dispatchEvent(new CustomEvent('tbg:content', { detail: { root: main } }));
 		};
 		if (!client || !slug) return notFound();
 		client.from('articles').select('*').eq('slug', slug).eq('published', true).maybeSingle().then(function (res) {
@@ -160,6 +163,7 @@
 			if (desc) desc.setAttribute('content', typeset(story.title) + ' ' + typeset(story.teaser));
 			var link = document.querySelector('.nav-list a[href="' + story.section + '"]');
 			if (link) link.setAttribute('aria-current', 'page');
+			document.dispatchEvent(new CustomEvent('tbg:content', { detail: { root: main } }));
 		});
 	}
 
